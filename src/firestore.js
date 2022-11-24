@@ -79,8 +79,12 @@ import {v4 as uuid} from 'uuid';
   const addEvent = async (title, start, end, owner) => {
     const eventID = uuid();
     const newEventRef = doc(firestoreDB, 'events', eventID);
+    await setDoc(newEventRef, {title, start, end, owner});
 
-    return await setDoc(newEventRef, {title, start, end, owner})
+    const snapshot = (await getDoc(newEventRef));
+    const userColours = await getUserColours();
+
+    return new Event(snapshot.data().title, snapshot.data().start, snapshot.data().end, userColours[snapshot.data().owner], snapshot.id, true);
   }
 
   const updateEvent = async (title, start, end, owner, eventID) => {
@@ -94,9 +98,11 @@ import {v4 as uuid} from 'uuid';
     const eventsArray = [];
     
     eventsCollection.forEach((event) => {
-      const isEditable = event.data().owner === uid;
+      const {title, start, end, owner} = event.data();
+      const isEditable = owner === uid;
       const colour = userColours[event.data().owner]
-      const formattedEvent = new Event(event.data().title, event.data().start, event.data().end, colour, event.id, isEditable);
+
+      const formattedEvent = new Event(title, start, end, colour, event.id, isEditable, owner);
       eventsArray.push(formattedEvent)
     })
 

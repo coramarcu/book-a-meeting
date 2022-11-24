@@ -5,17 +5,17 @@ import {
   calculateDefaultEndTime,
 } from "../formatting/dateAndTimeFormatting";
 import { authContext } from "../authContext";
-import { addEvent, getEvents } from "../firestore";
+import { addEvent, getEvents, updateEvent } from "../firestore";
 
-const NewEventForm = ({ selectedDate, setEvents }) => {
+const NewEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setNewEventFormIsOpen }) => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("New Meeting");
 
-  const defaultDate = selectedDate
-    ? selectedDate.dateStr.slice(0, 10)
+  const defaultDate = selectedEvent
+    ? selectedEvent.start.slice(0, 10)
     : new Date().toISOString().slice(0, 10);
-  const defaultStartTime = selectedDate
-    ? selectedDate.dateStr.slice(11, 16)
+  const defaultStartTime = selectedEvent
+    ? selectedEvent.start.slice(11, 16)
     : "08:00";
 
   const [date, setDate] = useState(defaultDate);
@@ -36,14 +36,28 @@ const NewEventForm = ({ selectedDate, setEvents }) => {
 
     const owner = currentUser.uid;
 
-    await addEvent(
-      title,
+    if(selectedEvent){
+      updateEvent(
+        title,
       date + "T" + startTime + "Z",
       date + "T" + endTime + "Z",
-      owner
-    );
+      owner,
+      selectedEvent.id
+      )
+    } else {
+      await addEvent(
+        title,
+        date + "T" + startTime + "Z",
+        date + "T" + endTime + "Z",
+        owner
+      );
+    }
+    
     const events = await getEvents(currentUser.uid);
     setEvents(events);
+
+    setSelectedEvent(null);
+    setNewEventFormIsOpen(false);
   };
 
   return loading ? (

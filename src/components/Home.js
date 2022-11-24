@@ -9,12 +9,14 @@ import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } 
 import NewEventForm from "./NewEventForm";
 import Navbar from "./Navbar";
 import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
+import FullCalendarEvent from "./FullCalendarEvent";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
   const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState();
   const [selectedDate, setSelectedDate] = useState();
 
   const handle = useFullScreenHandle();
@@ -50,14 +52,14 @@ const Home = () => {
   
   const handleDateClick = async (dateInfo) => {
     setSelectedDate(dateInfo);
-    setNewEventFormIsOpen(true);
 
     const endTime = calculateDefaultEndTime(dateInfo.dateStr.slice(11, 16));
     const endString = dateInfo.dateStr.slice(0,10) + 'T' + endTime;
   
-    addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
-
-    setEvents(await getEvents(currentUser.uid))
+    const newEvent = await addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
+    setSelectedEvent(newEvent);
+    setNewEventFormIsOpen(true);
+    setEvents(await getEvents(currentUser.uid));
   }
 
   return (
@@ -73,7 +75,14 @@ const Home = () => {
       </button>
 
       <button onClick={handle.enter}>Fullscreen</button>
-      {newEventFormIsOpen ? <NewEventForm selectedDate={selectedDate} setEvents={setEvents}/> : <></>}
+      {newEventFormIsOpen ? (
+      <NewEventForm 
+        selectedDate={selectedDate} 
+        setEvents={setEvents} 
+        selectedEvent={selectedEvent} 
+        setSelectedEvent={setSelectedEvent} 
+        setNewEventFormIsOpen={setNewEventFormIsOpen}
+      />) : <></>}
       <FullScreen handle={handle}>
       
       <FullCalendar
@@ -94,6 +103,7 @@ const Home = () => {
         events={events}
         eventChange={handleEventChange}
         dateClick={handleDateClick}
+        eventContent={FullCalendarEvent}
       />
       </FullScreen>
       <button onClick={() => logOut()}>Log out</button>

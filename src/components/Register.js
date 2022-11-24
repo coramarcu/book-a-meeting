@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerWithEmailAndPassword } from "../firebase";
 import { addProfileData } from "../firestore";
+import ColourSelect from "./ColourSelect";
 
 const Register = () => {
     const [name, setName] = useState();
@@ -14,17 +15,8 @@ const Register = () => {
     const [showEmailError, setShowEmailError] = useState(false);
     const [showPasswordError, setShowPasswordError] = useState(false);
 
-    const [avatar, setAvatar] = useState(null)
-
-    const colourOptions = [
-        "blue",
-        "red",
-        "green",
-        "fuschia",
-        "teal",
-        "purple"
-    ]
-    const [colour, setColour] = useState(colourOptions[0]);
+    const [avatar, setAvatar] = useState(null);
+    const [colour, setColour] = useState();
 
     const navigate = useNavigate();
 
@@ -67,6 +59,8 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
+        console.log(colour)
+
         setShowNameError(!nameIsValid);
         setShowPasswordError(!passwordIsValid);
         setShowEmailError(!emailIsValid);
@@ -104,15 +98,10 @@ const Register = () => {
                 </label>
                 <label>
                     Colour:
-                    <select onChange={(event) => setColour(event.target.value)}>
-                        {colourOptions.map((colourOption, index) => {
-                            return <option value={colourOption} key={index}>
-                                {colourOption}
-                            </option>
-                        })}
-                    </select>
-                </label>
-               
+                    <ColourSelect colour={colour} setColour={setColour}
+                />  
+                </label>  
+                        
                 <button>Register</button>
             </form>
             <Link to="/login">Already have an account? Log in</Link>
