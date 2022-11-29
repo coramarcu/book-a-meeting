@@ -5,8 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
-import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } from "../firestore";
-import NewEventForm from "./NewEventForm";
+import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
+import NewEventForm from "./EditEventForm";
 import Navbar from "./Navbar";
 import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
 import FullCalendarEvent from "./FullCalendarEvent";
@@ -15,7 +15,7 @@ const Home = () => {
   const { currentUser } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
-  const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
+  const [editEventFormIsOpen, setEditEventFormIsOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedDate, setSelectedDate] = useState();
 
@@ -58,7 +58,7 @@ const Home = () => {
   
     const newEvent = await addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
     setSelectedEvent(newEvent);
-    setNewEventFormIsOpen(true);
+    setEditEventFormIsOpen(true);
     setEvents(await getEvents(currentUser.uid));
   }
 
@@ -66,7 +66,7 @@ const Home = () => {
     const clickedEvent = events.find(event => event.id === eventInfo.event._def.publicId);
     if(clickedEvent.editable){
       setSelectedEvent(clickedEvent);
-      setNewEventFormIsOpen(true);
+      setEditEventFormIsOpen(true);
     }
   }
 
@@ -76,20 +76,20 @@ const Home = () => {
       <h1>Home</h1>
       <button
         onClick={() => {
-          setNewEventFormIsOpen(!newEventFormIsOpen);
+          setEditEventFormIsOpen(!editEventFormIsOpen);
         }}
       >
         Add event
       </button>
 
       <button onClick={handle.enter}>Fullscreen</button>
-      {newEventFormIsOpen ? (
+      {editEventFormIsOpen ? (
       <NewEventForm 
         selectedDate={selectedDate} 
         setEvents={setEvents} 
         selectedEvent={selectedEvent} 
         setSelectedEvent={setSelectedEvent} 
-        setNewEventFormIsOpen={setNewEventFormIsOpen}
+        setEditEventFormIsOpen={setEditEventFormIsOpen}
       />) : <></>}
       <FullScreen handle={handle}>
       
