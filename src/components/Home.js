@@ -62,6 +62,14 @@ const Home = () => {
     setEvents(await getEvents(currentUser.uid));
   }
 
+  const handleEventClick = async (eventInfo) => {
+    const clickedEvent = events.find(event => event.id === eventInfo.event._def.publicId);
+    if(clickedEvent.editable){
+      setSelectedEvent(clickedEvent);
+      setNewEventFormIsOpen(true);
+    }
+  }
+
   return (
     <div>
       <Navbar></Navbar>
@@ -104,6 +112,7 @@ const Home = () => {
         eventChange={handleEventChange}
         dateClick={handleDateClick}
         eventContent={FullCalendarEvent}
+        eventClick={handleEventClick}
       />
       </FullScreen>
       <button onClick={() => logOut()}>Log out</button>
