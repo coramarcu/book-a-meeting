@@ -6,16 +6,18 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
 import { logOut } from "../firebase";
 import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
-import NewEventForm from "./EditEventForm";
+import EditEventForm from "./EditEventForm";
 import Navbar from "./Navbar";
 import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
 import FullCalendarEvent from "./FullCalendarEvent";
+import EventSummary from "./EventSummary";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
   const [editEventFormIsOpen, setEditEventFormIsOpen] = useState(false);
+  const [eventSummaryIsOpen, setEventSummaryIsOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedDate, setSelectedDate] = useState();
 
@@ -64,9 +66,12 @@ const Home = () => {
 
   const handleEventClick = async (eventInfo) => {
     const clickedEvent = events.find(event => event.id === eventInfo.event._def.publicId);
+    setSelectedEvent(clickedEvent);
+
     if(clickedEvent.editable){
-      setSelectedEvent(clickedEvent);
       setEditEventFormIsOpen(true);
+    } else {
+      setEventSummaryIsOpen(true);
     }
   }
 
@@ -84,13 +89,18 @@ const Home = () => {
 
       <button onClick={handle.enter}>Fullscreen</button>
       {editEventFormIsOpen ? (
-      <NewEventForm 
+      <EditEventForm 
         selectedDate={selectedDate} 
         setEvents={setEvents} 
         selectedEvent={selectedEvent} 
         setSelectedEvent={setSelectedEvent} 
         setEditEventFormIsOpen={setEditEventFormIsOpen}
       />) : <></>}
+      {eventSummaryIsOpen ? <EventSummary
+        selectedEvent={selectedEvent} 
+        setSelectedEvent={setSelectedEvent} 
+        setEventSummaryIsOpen={setEventSummaryIsOpen}
+      /> : <></>}
       <FullScreen handle={handle}>
       
       <FullCalendar
