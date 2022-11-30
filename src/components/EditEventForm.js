@@ -17,19 +17,48 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
   const defaultStartTime = selectedEvent
     ? selectedEvent.start.slice(11, 16)
     : "08:00";
+  const defaultEndTime = selectedEvent ? selectedEvent.end.slice(11, 16) : "08:15";
+  
+  const timeStart = new Date("01/01/2022 " + defaultStartTime);
+  const timeEnd = new Date("01/01/2022 " + defaultEndTime);
 
+  const defaultDuration = selectedEvent ? (timeEnd - timeStart) / 60 / 1000 : 15;
+ 
   const [date, setDate] = useState(defaultDate);
   const [startTime, setStartTime] = useState(defaultStartTime);
-  const [endTime, setEndTime] = useState(calculateDefaultEndTime(startTime));
+  const [endTime, setEndTime] = useState(defaultEndTime);
+  const [durationInMinutes, setDurationInMinutes] = useState(defaultDuration);
   const [startTimeIncrements, setStartTimeIncrements] = useState();
   const [endTimeIncrements, setEndTimeIncrements] = useState();
   const { currentUser } = useContext(authContext);
 
   useEffect(() => {
+    
     setStartTimeIncrements(generateStartTimeIncrements());
     setEndTimeIncrements(generateEndTimeIncrements(startTime));
-    setLoading(false);
   }, [startTime]);
+
+  useEffect(() => {
+    if(selectedEvent && endTimeIncrements){
+      const selectedEndTime = endTimeIncrements.find((increment, index) => {
+        let incrementDuration = 0;
+        if(index <= 2) {
+          incrementDuration = parseInt(increment.slice(7, 9))
+        } else {
+          const hoursPattern = /(?<=\()\d+.*\d*(?=\s)/
+          console.log(increment.match(hoursPattern))
+          incrementDuration = parseFloat(increment.match(hoursPattern)[0]) * 60;
+        }
+        
+        return incrementDuration === durationInMinutes;
+      });
+
+      setEndTime(selectedEndTime);
+
+      setLoading(false);
+    }
+
+  }, [endTimeIncrements]);
 
   const submitEvent = async (event) => {
     event.preventDefault();
