@@ -103,6 +103,11 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
     setEditEventFormIsOpen(false);
   }
 
+  const handleCancel = () => {
+    setSelectedEvent(null);
+    setEditEventFormIsOpen(false);
+  }
+
   return loading ? (
     <p>Loading...</p>
   ) : (
@@ -175,6 +180,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
         </button>
       </form>
       <button onClick={handleDelete}>Delete</button>
+      <button onClick={handleCancel}>Cancel</button>
     </div>
   );
 };
