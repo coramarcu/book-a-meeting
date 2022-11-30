@@ -33,12 +33,11 @@ import {v4 as uuid} from 'uuid';
   };
 
   const updateProfileData = async (uid, name, colour, avatar) => {
-    if(avatar) {
+    if(!typeof avatar === "string") {
       const downloadURL = await uploadAvatar(uid, avatar);
       avatar = downloadURL;
-    } else {
-      avatar = '/images/defaultavatar.png'
     }
+    
     const profileRef = doc(firestoreDB, 'profiles', uid);
     return await updateDoc(profileRef, {name, colour, avatar})
   }
