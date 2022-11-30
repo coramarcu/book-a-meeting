@@ -4,6 +4,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
+import { profileContext } from "../profileContext";
 import { logOut } from "../firebase";
 import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
 import EditEventForm from "./EditEventForm";
@@ -20,6 +21,7 @@ const Home = () => {
   const [eventSummaryIsOpen, setEventSummaryIsOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedDate, setSelectedDate] = useState();
+  const [loading, setLoading] = useState(true);
 
   const handle = useFullScreenHandle();
 
@@ -39,6 +41,7 @@ const Home = () => {
         //await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
 
       setEvents(await getEvents(currentUser.uid));
+      setLoading(false);
     })();
   }, [currentUser]);
 
@@ -75,9 +78,12 @@ const Home = () => {
     }
   }
 
-  return (
+  return loading ? <p>Loading...</p> : (
     <div>
-      <Navbar></Navbar>
+      <profileContext.Provider value={{ profile, setProfile }}>
+        <Navbar setEvents={setEvents}/>
+      </profileContext.Provider>
+      
       <h1>Home</h1>
       <button
         onClick={() => {
@@ -107,6 +113,7 @@ const Home = () => {
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
+        slotEventOverlap="false"
         height={600}
         slotMinTime={"08:00:00"}
         slotMaxTime={"20:00:00"}
