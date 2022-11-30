@@ -74,6 +74,7 @@ const Register = () => {
     return (
         <div>
             <h1>Sign up below</h1>
+            <button onClick={() => navigate("/login", { replace: true })}>Already have an account? Log in here</button>
             <form onSubmit={attemptRegistration}>
                 <label>
                     Name:
@@ -102,7 +103,6 @@ const Register = () => {
                         
                 <button>Register</button>
             </form>
-            <Link to="/login">Already have an account? Log in</Link>
         </div>
     )
 }

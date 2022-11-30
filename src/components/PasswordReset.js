@@ -36,7 +36,8 @@ const PasswordReset = () => {
             </label>
             <button onClick={attemptReset}>Send password reset link</button>
         </form>
-        <Link to="/login">Back to login screen</Link>
+        
+        <button onClick={() => navigate("/login", { replace: true })}>Back to login screen</button>
     </div>
 }
 

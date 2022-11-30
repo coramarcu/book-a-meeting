@@ -38,7 +38,7 @@ const Login = () => {
     return (
         <div>
             <h1>Log in</h1>
-            <Link to="/register">New around here? Create an account</Link>
+            <button onClick={() => navigate("/register", { replace: true })}>New around here? Create an account</button>
             <form>
                 <label>
                     Email:
@@ -52,7 +52,7 @@ const Login = () => {
                 </label>
                 <button onClick={attemptLogin} >Log in</button>
             </form>
-            <Link to="/reset-password">Forgotten your password?</Link>
+            <button onClick={() => navigate("/reset-password", { replace: true })}>Forgotten your password?</button>
         </div>
     )
 }
