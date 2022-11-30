@@ -7,7 +7,7 @@ import {
 import { authContext } from "../authContext";
 import { addEvent, deleteEvent, getEvents, updateEvent } from "../firestore";
 
-const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEventFormIsOpen }) => {
+const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEventFormIsOpen, profile }) => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("New Meeting");
 
@@ -55,13 +55,11 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
       if(selectedEndTime) {
         setEndTime(selectedEndTime);
       } else {
-        console.log(endTimeIncrements[endTimeIncrements.length - 1])
         setEndTime(endTimeIncrements[endTimeIncrements.length - 1])
       }
-      
-      setLoading(false);
     }
 
+    setLoading(false);
   }, [endTimeIncrements]);
 
   const submitEvent = async (event) => {
@@ -119,7 +117,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
           <input
             type="text"
             name="title"
-            defaultValue={"New Meeting"}
+            defaultValue={`${profile.name}'s Meeting`}
             onChange={(event) => {
               setTitle(event.target.value);
             }}

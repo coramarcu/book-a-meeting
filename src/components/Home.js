@@ -58,7 +58,7 @@ const Home = () => {
     const endTime = calculateDefaultEndTime(dateInfo.dateStr.slice(11, 16));
     const endString = dateInfo.dateStr.slice(0,10) + 'T' + endTime;
   
-    const newEvent = await addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
+    const newEvent = await addEvent(`${profile.name}'s Meeting`, dateInfo.dateStr, endString, currentUser.uid);
     setSelectedEvent(newEvent);
     setEditEventFormIsOpen(true);
     setEvents(await getEvents(currentUser.uid));
@@ -95,6 +95,7 @@ const Home = () => {
         selectedEvent={selectedEvent} 
         setSelectedEvent={setSelectedEvent} 
         setEditEventFormIsOpen={setEditEventFormIsOpen}
+        profile={profile}
       />) : <></>}
       {eventSummaryIsOpen ? <EventSummary
         selectedEvent={selectedEvent} 
