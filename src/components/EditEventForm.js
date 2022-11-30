@@ -33,7 +33,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
   const { currentUser } = useContext(authContext);
 
   useEffect(() => {
-    
+    setLoading(true)
     setStartTimeIncrements(generateStartTimeIncrements());
     setEndTimeIncrements(generateEndTimeIncrements(startTime));
   }, [startTime]);
@@ -45,16 +45,20 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
         if(index <= 2) {
           incrementDuration = parseInt(increment.slice(7, 9))
         } else {
-          const hoursPattern = /(?<=\()\d+.*\d*(?=\s)/
-          console.log(increment.match(hoursPattern))
+          const hoursPattern = /(?<=\()\d+.*\d*(?=\s)/;
           incrementDuration = parseFloat(increment.match(hoursPattern)[0]) * 60;
         }
-        
+
         return incrementDuration === durationInMinutes;
       });
 
-      setEndTime(selectedEndTime);
-
+      if(selectedEndTime) {
+        setEndTime(selectedEndTime);
+      } else {
+        console.log(endTimeIncrements[endTimeIncrements.length - 1])
+        setEndTime(endTimeIncrements[endTimeIncrements.length - 1])
+      }
+      
       setLoading(false);
     }
 
@@ -69,7 +73,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
       updateEvent(
         title,
       date + "T" + startTime + "Z",
-      date + "T" + endTime + "Z",
+      date + "T" + endTime.slice(0, 5) + "Z",
       owner,
       selectedEvent.id
       )
@@ -77,7 +81,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
       await addEvent(
         title,
         date + "T" + startTime + "Z",
-        date + "T" + endTime + "Z",
+        date + "T" + endTime.slice(0, 5) + "Z",
         owner
       );
     }
@@ -148,7 +152,11 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
           <select
             defaultValue={endTime}
             onChange={(event) => {
-              setEndTime(event.target.value.slice(0, 5));
+              const hoursPattern = /(?<=\()\d+.*\d*(?=\s)/;
+              const newDuration = parseFloat(endTime.match(hoursPattern)[0]) * 60;
+    
+              setDurationInMinutes(newDuration)
+              setEndTime(event.target.value);
             }}
           >
             {endTimeIncrements.map((increment, index) => {
