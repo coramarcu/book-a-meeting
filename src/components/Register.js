@@ -59,8 +59,6 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
-        console.log(colour)
-
         setShowNameError(!nameIsValid);
         setShowPasswordError(!passwordIsValid);
         setShowEmailError(!emailIsValid);
