@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { profileContext } from "../profileContext";
 import { updateProfileData, uploadAvatar } from "../firestore";
+import { logOut } from "../firebase";
 import ColourSelect from "./ColourSelect";
 
 const Settings = () => {
   const { profile, setProfile } = useContext(profileContext);
-  const [name, setName] = useState();
+  const [name, setName] = useState(profile.name);
   const [nameIsValid, setNameIsValid] = useState(true);
   const [showNameError, setShowNameError] = useState(false);
   const [avatar, setAvatar] = useState(profile.avatar);
@@ -54,6 +55,7 @@ const Settings = () => {
         <h3>Profile Colour</h3>
         <ColourSelect colour={selectedColour} setColour={setSelectedColour}/>
       </div>
+      <button onClick={() => logOut()}>Log out</button>
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { authContext } from "../authContext";
 import { profileContext } from "../profileContext";
-import { logOut } from "../firebase";
 import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
 import EditEventForm from "./EditEventForm";
 import Navbar from "./Navbar";
@@ -97,6 +96,7 @@ const Home = () => {
       {editEventFormIsOpen ? (
       <EditEventForm 
         selectedDate={selectedDate} 
+        events={events}
         setEvents={setEvents} 
         selectedEvent={selectedEvent} 
         setSelectedEvent={setSelectedEvent} 
@@ -133,7 +133,7 @@ const Home = () => {
         eventClick={handleEventClick}
       />
       </FullScreen>
-      <button onClick={() => logOut()}>Log out</button>
+      
     </div>
   );
 };
