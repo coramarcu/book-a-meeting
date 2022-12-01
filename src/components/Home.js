@@ -93,7 +93,7 @@ const Home = () => {
         Add event
       </button>
 
-      <button onClick={handle.enter}>Fullscreen</button>
+      <button onClick={handle.enter}>Display Mode</button>
       {editEventFormIsOpen ? (
       <EditEventForm 
         selectedDate={selectedDate} 
