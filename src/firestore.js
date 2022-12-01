@@ -33,7 +33,7 @@ import {v4 as uuid} from 'uuid';
   };
 
   const updateProfileData = async (uid, name, colour, avatar) => {
-    if(!typeof avatar === "string") {
+    if(typeof avatar !== "string") {
       const downloadURL = await uploadAvatar(uid, avatar);
       avatar = downloadURL;
     }
