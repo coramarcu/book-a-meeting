@@ -5,6 +5,9 @@ import ColourSelect from "./ColourSelect";
 
 const Settings = () => {
   const { profile, setProfile } = useContext(profileContext);
+  const [name, setName] = useState();
+  const [nameIsValid, setNameIsValid] = useState(true);
+  const [showNameError, setShowNameError] = useState(false);
   const [avatar, setAvatar] = useState(profile.avatar);
   const [selectedColour, setSelectedColour] = useState(profile.colour);
   
@@ -12,11 +15,22 @@ const Settings = () => {
   useEffect(() => {
     const updatedProfile = {...profile};
     updatedProfile.colour = selectedColour;
-    updatedProfile.avatar = avatar
+    updatedProfile.avatar = avatar;
+    
+    if(nameIsValid) {
+      updatedProfile.name = name;
+    }
+    setShowNameError(!nameIsValid);
+
     setProfile(updatedProfile);
     
-    const response = updateProfileData(profile.uid, profile.name, updatedProfile.colour, updatedProfile.avatar);
-  }, [selectedColour, avatar])
+    updateProfileData(profile.uid, profile.name, updatedProfile.colour, updatedProfile.avatar);
+  }, [selectedColour, avatar, name]);
+
+  const handleChangeName = (event) => {
+    setName(event.target.value);
+    setNameIsValid(event.target.value.length > 0 && event.target.value.length <= 50)
+}
 
   const handleFileInput = async (event) => {
     const avatarFile = event.target.files[0];
@@ -29,7 +43,8 @@ const Settings = () => {
   return (
     <div className="settings-container">
       <div className={`setting ${profile.colour}`}>
-        <h2>{profile.name}</h2>
+        <input type="text" name="name" defaultValue={profile.name} onChange={handleChangeName} onBlur={() => {setShowNameError(!nameIsValid)}}/>
+                    {showNameError ? <p>Name must be between 1 and 50 characters long</p> : <></>}
       </div>
       <div className="setting">
         <img src={profile.avatar} alt={"Logo"}/>
