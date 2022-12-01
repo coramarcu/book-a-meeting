@@ -3,13 +3,15 @@ import {
   generateStartTimeIncrements,
   generateEndTimeIncrements,
   calculateDefaultEndTime,
-} from "../formatting/dateAndTimeFormatting";
+} from "../tools/dateAndTimeFormatting";
 import { authContext } from "../authContext";
 import { addEvent, deleteEvent, getEvents, updateEvent } from "../firestore";
+import freeSlotChecker from "../tools/freeSlotChecker";
 
-const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEventFormIsOpen, profile }) => {
+const EditEventForm = ({ events, setEvents, selectedEvent, setSelectedEvent, setEditEventFormIsOpen }) => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("New Meeting");
+  const meetingID = selectedEvent ? selectedEvent.id : null;
 
   const defaultDate = selectedEvent
     ? selectedEvent.start.slice(0, 10)
@@ -30,16 +32,25 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
   const [durationInMinutes, setDurationInMinutes] = useState(defaultDuration);
   const [startTimeIncrements, setStartTimeIncrements] = useState();
   const [endTimeIncrements, setEndTimeIncrements] = useState();
+  const [slotIsFree, setSlotIsFree] = useState();
+
   const { currentUser } = useContext(authContext);
 
   useEffect(() => {
     setLoading(true)
+
+    setSlotIsFree(freeSlotChecker(date + "T" + startTime + ".000Z", date + "T" + endTime.slice(0, 5) + ".000Z", events, meetingID));
+
     setStartTimeIncrements(generateStartTimeIncrements());
     setEndTimeIncrements(generateEndTimeIncrements(startTime));
   }, [startTime]);
 
   useEffect(() => {
-    if(selectedEvent && endTimeIncrements){
+    setSlotIsFree(freeSlotChecker(date + "T" + startTime + ".000Z", date + "T" + endTime.slice(0, 5) + ".000Z", events, meetingID));
+  }, [endTime])
+
+  useEffect(() => {
+    if(endTimeIncrements){
       const selectedEndTime = endTimeIncrements.find((increment, index) => {
         let incrementDuration = 0;
         if(index <= 2) {
@@ -55,17 +66,24 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
       if(selectedEndTime) {
         setEndTime(selectedEndTime);
       } else {
+        console.log(endTimeIncrements[endTimeIncrements.length - 1])
         setEndTime(endTimeIncrements[endTimeIncrements.length - 1])
       }
-    }
 
-    setLoading(false);
+      setLoading(false);
+    }
+    
+
   }, [endTimeIncrements]);
 
   const submitEvent = async (event) => {
     event.preventDefault();
 
     const owner = currentUser.uid;
+
+    if(!slotIsFree){
+      return
+    }
 
     if(selectedEvent){
       updateEvent(
@@ -117,7 +135,7 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
           <input
             type="text"
             name="title"
-            defaultValue={`${profile.name}'s Meeting`}
+            defaultValue={"New Meeting"}
             onChange={(event) => {
               setTitle(event.target.value);
             }}
@@ -167,6 +185,8 @@ const EditEventForm = ({ setEvents, selectedEvent, setSelectedEvent, setEditEven
             })}
           </select>
         </label>
+
+        {slotIsFree ? <></> : <p>A meeting has already been booked at this time. Please check the calendar</p>}
 
         <button
           type="submit"
