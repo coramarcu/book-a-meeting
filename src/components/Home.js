@@ -3,12 +3,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { authContext } from "../authContext";
-import { profileContext } from "../profileContext";
-import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../firestore";
+import { authContext } from "../contexts/authContext";
+import { profileContext } from "../contexts/profileContext";
+import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../services/firestore";
 import EditEventForm from "./EditEventForm";
 import Navbar from "./Navbar";
-import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
+import { calculateDefaultEndTime } from "../tools/dateAndTimeFormatting";
 import FullCalendarEvent from "./FullCalendarEvent";
 import EventSummary from "./EventSummary";
 

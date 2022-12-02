@@ -1,8 +1,8 @@
 import logo from "../images/logo-cat.jpg";
 import { useContext, useEffect, useState } from "react";
-import { authContext } from "../authContext";
-import { profileContext } from "../profileContext";
-import { getEvents } from "../firestore";
+import { authContext } from "../contexts/authContext";
+import { profileContext } from "../contexts/profileContext";
+import { getEvents } from "../services/firestore";
 import Settings from "./Settings";
 
 const Navbar = ({setEvents}) => {

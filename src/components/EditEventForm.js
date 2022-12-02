@@ -4,8 +4,8 @@ import {
   generateEndTimeIncrements,
   calculateDefaultEndTime,
 } from "../tools/dateAndTimeFormatting";
-import { authContext } from "../authContext";
-import { addEvent, deleteEvent, getEvents, updateEvent } from "../firestore";
+import { authContext } from "../contexts/authContext";
+import { addEvent, deleteEvent, getEvents, updateEvent } from "../services/firestore";
 import freeSlotChecker from "../tools/freeSlotChecker";
 
 const EditEventForm = ({ events, setEvents, selectedEvent, setSelectedEvent, setEditEventFormIsOpen }) => {

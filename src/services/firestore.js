@@ -9,8 +9,8 @@ import {
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import Profile from './models/Profile';
-import Event from './models/Event';
+import Profile from '../models/Profile';
+import Event from '../models/Event';
 import {v4 as uuid} from 'uuid';
 
   const addProfileData = async (uid, name, colour, avatar) => {

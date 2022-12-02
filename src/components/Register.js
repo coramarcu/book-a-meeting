@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerWithEmailAndPassword } from "../firebase";
-import { addProfileData } from "../firestore";
+import { registerWithEmailAndPassword } from "../services/firebase";
+import { addProfileData } from "../services/firestore";
 import ColourSelect from "./ColourSelect";
 
 const Register = () => {

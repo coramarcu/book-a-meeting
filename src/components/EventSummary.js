@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createProfileFromUser } from "../firestore";
+import { createProfileFromUser } from "../services/firestore";
 
 const EventSummary = ({selectedEvent, setSelectedEvent, setEventSummaryIsOpen}) => {
     const [loading, setLoading] = useState(true);
@@ -11,9 +11,6 @@ const EventSummary = ({selectedEvent, setSelectedEvent, setEventSummaryIsOpen}) 
             setOwner(ownerProfile);
             setLoading(false);
         })();
-    }, []);
-
-    useEffect(() => {
 
         const handleClick = () => {
             setSelectedEvent(null);
@@ -24,7 +21,7 @@ const EventSummary = ({selectedEvent, setSelectedEvent, setEventSummaryIsOpen}) 
         return () => {
         document.removeEventListener("mousedown", handleClick);
     };
-    })
+    }, []);
 
     return loading ? (
     <p>loading...</p>

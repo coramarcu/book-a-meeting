@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
-import { profileContext } from "../profileContext";
-import { updateProfileData, uploadAvatar } from "../firestore";
-import { logOut } from "../firebase";
+import { profileContext } from "../contexts/profileContext";
+import { updateProfileData, uploadAvatar } from "../services/firestore";
+import { logOut } from "../services/firebase";
 import ColourSelect from "./ColourSelect";
 
 const Settings = () => {
@@ -25,7 +25,7 @@ const Settings = () => {
 
     setProfile(updatedProfile);
     
-    updateProfileData(profile.uid, profile.name, updatedProfile.colour, updatedProfile.avatar);
+    updateProfileData(updatedProfile.uid, updatedProfile.name, updatedProfile.colour, updatedProfile.avatar);
   }, [selectedColour, avatar, name]);
 
   const handleChangeName = (event) => {
