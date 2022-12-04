@@ -1,3 +1,4 @@
+
 export const generateStartTimeIncrements = () => {
     const timeIncrements = [];
     let hours = 8;  //adjust earliest start time here
@@ -52,7 +53,7 @@ export const generateEndTimeIncrements = (startTime) => {
                 if(duration < 60){
                     finalIncrement += duration + "mins)";
                 } else {
-                    finalIncrement += (duration-minutes)/60 + "hrs)";
+                    finalIncrement += (duration-minutes)/60 + " hrs)";
                 } 
                 timeIncrements.push(finalIncrement); 
             }

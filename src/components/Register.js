@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerWithEmailAndPassword } from "../firebase";
-import { addProfileData } from "../firestore";
+import { registerWithEmailAndPassword } from "../services/firebase";
+import { addProfileData } from "../services/firestore";
 import ColourSelect from "./ColourSelect";
 
 const Register = () => {
@@ -59,8 +59,6 @@ const Register = () => {
     const attemptRegistration = async (event) => {
         event.preventDefault();
 
-        console.log(colour)
-
         setShowNameError(!nameIsValid);
         setShowPasswordError(!passwordIsValid);
         setShowEmailError(!emailIsValid);
@@ -76,6 +74,7 @@ const Register = () => {
     return (
         <div>
             <h1>Sign up below</h1>
+            <button onClick={() => navigate("/login", { replace: true })}>Already have an account? Log in here</button>
             <form onSubmit={attemptRegistration}>
                 <label>
                     Name:
@@ -104,7 +103,6 @@ const Register = () => {
                         
                 <button>Register</button>
             </form>
-            <Link to="/login">Already have an account? Log in</Link>
         </div>
     )
 }

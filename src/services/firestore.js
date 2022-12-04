@@ -9,8 +9,8 @@ import {
   } from 'firebase/firestore';
   import { firestoreDB, storage } from './firebase';
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import Profile from './models/Profile';
-import Event from './models/Event';
+import Profile from '../models/Profile';
+import Event from '../models/Event';
 import {v4 as uuid} from 'uuid';
 
   const addProfileData = async (uid, name, colour, avatar) => {
@@ -33,12 +33,11 @@ import {v4 as uuid} from 'uuid';
   };
 
   const updateProfileData = async (uid, name, colour, avatar) => {
-    if(avatar) {
+    if(typeof avatar !== "string") {
       const downloadURL = await uploadAvatar(uid, avatar);
       avatar = downloadURL;
-    } else {
-      avatar = '/images/defaultavatar.png'
     }
+    
     const profileRef = doc(firestoreDB, 'profiles', uid);
     return await updateDoc(profileRef, {name, colour, avatar})
   }

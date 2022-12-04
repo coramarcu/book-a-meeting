@@ -3,21 +3,24 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useContext, useEffect, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { authContext } from "../authContext";
-import { logOut } from "../firebase";
-import { addEvent, createProfileFromUser, deleteEvent, getEvents, updateEvent } from "../firestore";
-import NewEventForm from "./NewEventForm";
+import { authContext } from "../contexts/authContext";
+import { profileContext } from "../contexts/profileContext";
+import { addEvent, createProfileFromUser, getEvents, updateEvent } from "../services/firestore";
+import EditEventForm from "./EditEventForm";
 import Navbar from "./Navbar";
-import { calculateDefaultEndTime } from "../formatting/dateAndTimeFormatting";
+import { calculateDefaultEndTime } from "../tools/dateAndTimeFormatting";
 import FullCalendarEvent from "./FullCalendarEvent";
+import EventSummary from "./EventSummary";
 
 const Home = () => {
   const { currentUser } = useContext(authContext);
   const [profile, setProfile] = useState();
   const [events, setEvents] = useState();
-  const [newEventFormIsOpen, setNewEventFormIsOpen] = useState(false);
+  const [editEventFormIsOpen, setEditEventFormIsOpen] = useState(false);
+  const [eventSummaryIsOpen, setEventSummaryIsOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
   const [selectedDate, setSelectedDate] = useState();
+  const [loading, setLoading] = useState(true);
 
   const handle = useFullScreenHandle();
 
@@ -37,6 +40,7 @@ const Home = () => {
         //await addEvent(exampleEvent.title, exampleEvent.start, exampleEvent.end, exampleEvent.owner);
 
       setEvents(await getEvents(currentUser.uid));
+      setLoading(false);
     })();
   }, [currentUser]);
 
@@ -56,38 +60,60 @@ const Home = () => {
     const endTime = calculateDefaultEndTime(dateInfo.dateStr.slice(11, 16));
     const endString = dateInfo.dateStr.slice(0,10) + 'T' + endTime;
   
-    const newEvent = await addEvent('test', dateInfo.dateStr, endString, currentUser.uid);
+    const newEvent = await addEvent(`${profile.name}'s Meeting`, dateInfo.dateStr, endString, currentUser.uid);
     setSelectedEvent(newEvent);
-    setNewEventFormIsOpen(true);
+    setEditEventFormIsOpen(true);
     setEvents(await getEvents(currentUser.uid));
   }
 
-  return (
+  const handleEventClick = async (eventInfo) => {
+    const clickedEvent = events.find(event => event.id === eventInfo.event._def.publicId);
+    setSelectedEvent(clickedEvent);
+
+    if(clickedEvent.editable){
+      setEditEventFormIsOpen(true);
+    } else {
+      setEventSummaryIsOpen(true);
+    }
+  }
+
+  return loading ? <p>Loading...</p> : (
     <div>
-      <Navbar></Navbar>
+      <profileContext.Provider value={{ profile, setProfile }}>
+        <Navbar setEvents={setEvents}/>
+      </profileContext.Provider>
+      
       <h1>Home</h1>
       <button
         onClick={() => {
-          setNewEventFormIsOpen(!newEventFormIsOpen);
+          setEditEventFormIsOpen(!editEventFormIsOpen);
         }}
       >
         Add event
       </button>
 
-      <button onClick={handle.enter}>Fullscreen</button>
-      {newEventFormIsOpen ? (
-      <NewEventForm 
+      <button onClick={handle.enter}>Display Mode</button>
+      {editEventFormIsOpen ? (
+      <EditEventForm 
         selectedDate={selectedDate} 
+        events={events}
         setEvents={setEvents} 
         selectedEvent={selectedEvent} 
         setSelectedEvent={setSelectedEvent} 
-        setNewEventFormIsOpen={setNewEventFormIsOpen}
+        setEditEventFormIsOpen={setEditEventFormIsOpen}
+        profile={profile}
       />) : <></>}
+      {eventSummaryIsOpen ? <EventSummary
+        selectedEvent={selectedEvent} 
+        setSelectedEvent={setSelectedEvent} 
+        setEventSummaryIsOpen={setEventSummaryIsOpen}
+      /> : <></>}
       <FullScreen handle={handle}>
       
       <FullCalendar
         plugins={[timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
+        slotEventOverlap="false"
         height={600}
         slotMinTime={"08:00:00"}
         slotMaxTime={"20:00:00"}
@@ -104,9 +130,10 @@ const Home = () => {
         eventChange={handleEventChange}
         dateClick={handleDateClick}
         eventContent={FullCalendarEvent}
+        eventClick={handleEventClick}
       />
       </FullScreen>
-      <button onClick={() => logOut()}>Log out</button>
+      
     </div>
   );
 };

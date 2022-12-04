@@ -1,23 +1,20 @@
 import logo from "../images/logo-cat.jpg";
 import { useContext, useEffect, useState } from "react";
-import { authContext } from "../authContext";
-import { createProfileFromUser } from "../firestore";
+import { authContext } from "../contexts/authContext";
+import { profileContext } from "../contexts/profileContext";
+import { getEvents } from "../services/firestore";
 import Settings from "./Settings";
 
-const Navbar = () => {
+const Navbar = ({setEvents}) => {
   const { currentUser } = useContext(authContext);
-  const [profile, setProfile] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const { profile, setProfile } = useContext(profileContext);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const currentProfile = await createProfileFromUser(currentUser);
-      setProfile(currentProfile);
-      setIsLoading(false);
-    })();
-  }, []);
+
   const handleAvatarClick = () => {
     setIsSettingsOpen(!isSettingsOpen);
+    (async() => {
+      setEvents(await getEvents(currentUser.uid))
+    })();
   };
 
   return (
@@ -26,23 +23,15 @@ const Navbar = () => {
         <img src={logo} alt={"Logo"}></img>
       </div>
       <div>
-        {isLoading ? (
-          <p>Loading</p>
-        ) : (
           <img
             src={profile.avatar}
             alt={"user avatar"}
             onClick={handleAvatarClick}
           ></img>
-        )}
       </div>
       <div>
         {isSettingsOpen ? (
-          <Settings
-            name={profile.name}
-            avatar={profile.avatar}
-            colour={profile.colour}
-          ></Settings>
+          <Settings/>
         ) : (
           <></>
         )}

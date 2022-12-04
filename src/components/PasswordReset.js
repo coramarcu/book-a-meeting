@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { resetPassword } from "../firebase";
+import { resetPassword } from "../services/firebase";
 
 const PasswordReset = () => {
     const [email, setEmail] = useState("");
@@ -36,7 +36,8 @@ const PasswordReset = () => {
             </label>
             <button onClick={attemptReset}>Send password reset link</button>
         </form>
-        <Link to="/login">Back to login screen</Link>
+        
+        <button onClick={() => navigate("/login", { replace: true })}>Back to login screen</button>
     </div>
 }
 
