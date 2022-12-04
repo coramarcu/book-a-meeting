@@ -1,0 +1,15 @@
+@use "./vars";
+.nav-and-settings-wrap {
+  position: relative;
+
+  .settings-container {
+    position: absolute;
+    right: 0;
+    top: 5rem;
+    z-index: 2;
+    width: 70vw;
+    background-color: vars.$white;
+    box-shadow: vars.$shadow;
+    padding: 2rem 1rem;
+  }
+}

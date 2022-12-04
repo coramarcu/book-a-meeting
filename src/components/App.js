@@ -9,35 +9,46 @@ import ProtectedLogin from "./ProtectedLogin";
 import PasswordReset from "./PasswordReset";
 
 function App() {
-
   return (
     <AuthProvider>
       <BrowserRouter>
         <div className="App">
           <Routes>
-            <Route path='/login' element={
-              <ProtectedLogin>
-                <Login/>
-              </ProtectedLogin>
-            }/>
+            <Route
+              path="/login"
+              element={
+                <ProtectedLogin>
+                  <Login />
+                </ProtectedLogin>
+              }
+            />
 
-            <Route path='/register' element={
-              <ProtectedLogin>
-                <Register/>
-              </ProtectedLogin>
-            }/>   
+            <Route
+              path="/register"
+              element={
+                <ProtectedLogin>
+                  <Register />
+                </ProtectedLogin>
+              }
+            />
 
-            <Route path='/reset-password' element={
-              <ProtectedLogin>
-                <PasswordReset/>
-              </ProtectedLogin>
-            }/>        
+            <Route
+              path="/reset-password"
+              element={
+                <ProtectedLogin>
+                  <PasswordReset />
+                </ProtectedLogin>
+              }
+            />
 
-            <Route path='/' element={
-              <ProtectedRoute>
-                <Home/>
-              </ProtectedRoute>
-            }/>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
