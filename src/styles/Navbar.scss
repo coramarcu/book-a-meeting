@@ -1,0 +1,41 @@
+@use "./vars";
+
+.navbar {
+  background-color: vars.$white;
+  box-shadow: vars.$shadow;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .logo-wrap {
+    max-width: 3rem;
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .profile-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    .profile-picture-wrap {
+      max-width: 3rem;
+
+      img {
+        max-width: 100%;
+        border-radius: 50px;
+      }
+    }
+    .arrow {
+      width: 1rem;
+      fill: vars.$gray;
+      &-up {
+        width: 1rem;
+        fill: vars.$gray;
+        transform: rotate(180deg);
+      }
+    }
+  }
+}

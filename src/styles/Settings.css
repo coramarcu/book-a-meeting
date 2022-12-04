@@ -1,0 +1,13 @@
+.nav-and-settings-wrap {
+  position: relative;
+}
+.nav-and-settings-wrap .settings-container {
+  position: absolute;
+  right: 0;
+  top: 5rem;
+  z-index: 2;
+  width: 70vw;
+  background-color: #fff;
+  box-shadow: 0px 2px 7px 0px rgba(0, 0, 0, 0.15);
+  padding: 2rem 1rem;
+}/*# sourceMappingURL=Settings.css.map */

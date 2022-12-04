@@ -1,0 +1,35 @@
+.navbar {
+  background-color: #fff;
+  box-shadow: 0px 2px 7px 0px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar .logo-wrap {
+  max-width: 3rem;
+}
+.navbar .logo-wrap img {
+  max-width: 100%;
+}
+.navbar .profile-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar .profile-box .profile-picture-wrap {
+  max-width: 3rem;
+}
+.navbar .profile-box .profile-picture-wrap img {
+  max-width: 100%;
+  border-radius: 50px;
+}
+.navbar .profile-box .arrow {
+  width: 1rem;
+  fill: #6f6f6f;
+}
+.navbar .profile-box .arrow-up {
+  width: 1rem;
+  fill: #6f6f6f;
+  transform: rotate(180deg);
+}/*# sourceMappingURL=Navbar.css.map */
